@@ -1,3 +1,9 @@
+// At 5.3.7 lesson!
+
+
+
+
+
 var tasks = {};
 
 var createTask = function(taskText, taskDate, taskList) {
@@ -134,6 +140,67 @@ $(".list-group").on("blur", "input[type='text']", function() {
 
   // replace input with span element
   $(this).replaceWith(taskSpan);
+});
+
+$(".card .list-group").sortable({
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function(event) {
+    console.log("activate", this);
+  },
+  over: function(event) {
+    console.log("over", event.target);
+  },
+  out: function(event) {
+    console.log("out", event.target);
+  },
+  update: function(event) {
+    const tempArr = [];
+    
+    // loop over current set of children in sortable list
+    $(this).children().each(function() {
+      const text = $(this)
+      .find("p")
+      .text()
+      .trim();
+
+      const date = $(this)
+      .find("span")
+      .text()
+      .trim();
+
+      // add task data to the temp array as an object
+      tempArr.push({
+        text: text,
+        date: date
+      });
+
+    });
+
+    const arrName = $(this)
+        .attr("id")
+        .replace("list-", "");
+
+      tasks[arrName] = tempArr;
+
+      saveTasks();
+  }
+});
+
+$("#trash").droppable({
+  activate: ".card .list-group-itme",
+  tolerance: "touch",
+  drop: function(event, ui) {
+    ui.draggable.remove();
+  },
+  over: function(event, ui) {
+    console.log("over");
+  },
+  out: function(event, ui) {
+    console.log("out")
+  }
 })
 
 
